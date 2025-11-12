@@ -440,7 +440,6 @@ preferred_domains = ['anandtech', 'tomshardware', 'pcmag', 'digitaltrends', 'not
 
 2. **Hardcoded OpenAI API Key:**
    - Location: `get_responses_test_conditions.py` (lines 7, 24)
-   - Key: `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`
    - Status: EXPOSED IN SOURCE CODE
 
 3. **Hardcoded YouTube Data API Key:**
