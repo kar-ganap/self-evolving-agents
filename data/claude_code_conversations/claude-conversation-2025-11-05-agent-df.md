@@ -583,7 +583,7 @@ This Research Intelligence Platform is a multi-agent AI system built on Google's
 ```bash
 GOOGLE_CLOUD_PROJECT=research-intel-agents
 DEFAULT_MODEL=gemini-2.5-pro  # Respects this for all agents
-GOOGLE_API_KEY=AIzaSyBwtjvd4QqtMIlPkNog03DfxhUEYA94q1A
+GOOGLE_API_KEY=
 SENDGRID_API_KEY=your-sendgrid-key-here  # Not configured yet
 ```
 
