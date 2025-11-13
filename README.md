@@ -43,16 +43,15 @@ self-evolving-agents/
 git clone https://github.com/kar-ganap/self-evolving-agents.git
 cd self-evolving-agents
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install dependencies
-pip install -r requirements.txt
+# Sync dependencies (automatically creates venv and installs everything)
+uv sync
 
 # Configure environment
 cp .env.example .env
-# Edit .env and add your ANTHROPIC_API_KEY
+# Edit .env and add your API keys (ANTHROPIC_API_KEY, OPENAI_API_KEY, GOOGLE_API_KEY)
 ```
 
 ### 2. Choose Your Level
@@ -60,13 +59,13 @@ cp .env.example .env
 **Level 1 Only** (Recommended for starting):
 ```bash
 # Run Level 1 CRAWL demo (5.5 hours implementation)
-streamlit run src/demo/level1_crawl_demo.py
+uv run streamlit run src/demo/level1_crawl_demo.py
 ```
 
 **Level 1 + Level 2** (Advanced):
 ```bash
 # Run Level 2 CRAWL demo (9.5 hours implementation)
-streamlit run src/demo/level2_crawl_demo.py
+uv run streamlit run src/demo/level2_crawl_demo.py
 ```
 
 ## Implementation Phases

@@ -51,13 +51,20 @@ Running the same command twice produces **identical results**.
 
 ### 1. Install Dependencies
 
+This project uses [uv](https://github.com/astral-sh/uv) for fast, reliable Python package management.
+
 ```bash
-pip install -r requirements.txt
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Sync dependencies (installs everything from pyproject.toml)
+uv sync
 ```
 
 This installs:
 - `openai>=1.0.0` - OpenAI API client
 - `google-genai>=0.1.0` - Google Gemini API client (unified SDK)
+- All other project dependencies
 
 ### 2. Configure API Keys
 
@@ -103,13 +110,13 @@ Generate from specific provider:
 
 ```bash
 # OpenAI (100 examples)
-python -m src.level1.run.synthetic_data_generator \
+uv run python -m src.level1.run.synthetic_data_generator \
     --provider openai \
     --count 100 \
     --seed 42
 
 # Gemini (100 examples)
-python -m src.level1.run.synthetic_data_generator \
+uv run python -m src.level1.run.synthetic_data_generator \
     --provider gemini \
     --count 100 \
     --seed 42
@@ -120,7 +127,7 @@ python -m src.level1.run.synthetic_data_generator \
 Generate 5 examples to test:
 
 ```bash
-python -m src.level1.run.synthetic_data_generator \
+uv run python -m src.level1.run.synthetic_data_generator \
     --provider openai \
     --count 5 \
     --seed 42
@@ -201,8 +208,8 @@ If you hit rate limits:
 
 ```bash
 # Generate in smaller batches
-python -m src.level1.run.synthetic_data_generator --provider openai --count 20
-python -m src.level1.run.synthetic_data_generator --provider openai --count 20
+uv run python -m src.level1.run.synthetic_data_generator --provider openai --count 20
+uv run python -m src.level1.run.synthetic_data_generator --provider openai --count 20
 ...
 ```
 
