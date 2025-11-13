@@ -49,10 +49,16 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # Sync dependencies (automatically creates venv and installs everything)
 uv sync
 
+# Optional: Install ML dependencies for local fine-tuning (only if you need local training)
+# Most users can skip this and use Anthropic's fine-tuning API instead
+uv sync --extra ml
+
 # Configure environment
 cp .env.example .env
 # Edit .env and add your API keys (ANTHROPIC_API_KEY, OPENAI_API_KEY, GOOGLE_API_KEY)
 ```
+
+**Note**: The ML dependencies (PyTorch, transformers) are optional and only needed for local fine-tuning. Most users will use Anthropic's fine-tuning API and don't need these heavy dependencies.
 
 ### 2. Choose Your Level
 
