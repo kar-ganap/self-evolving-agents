@@ -10,8 +10,11 @@ python-dotenv>=1.0.0           # Environment variable management
 # Level 1 WALK
 # (No additional dependencies)
 
+# Synthetic Data Generation
+openai>=1.0.0                  # OpenAI API for synthetic data generation
+google-genai>=0.1.0            # Google Gemini API for synthetic data generation (unified SDK)
+
 # Level 1 RUN - Fine-tuning
-openai>=1.0.0                  # OpenAI API for fine-tuning (optional)
 transformers>=4.36.0           # Hugging Face transformers (optional)
 peft>=0.7.0                    # LoRA fine-tuning (optional)
 datasets>=2.16.0               # Dataset loading (optional)
