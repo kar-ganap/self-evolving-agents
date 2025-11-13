@@ -1,0 +1,42 @@
+# Self-Evolving Agents - Python Dependencies
+
+# Core Dependencies
+anthropic>=0.18.0              # Claude API client
+python-dotenv>=1.0.0           # Environment variable management
+
+# Level 1 CRAWL
+# (Core dependencies above are sufficient)
+
+# Level 1 WALK
+# (No additional dependencies)
+
+# Synthetic Data Generation
+openai>=1.0.0                  # OpenAI API for synthetic data generation
+google-genai>=0.1.0            # Google Gemini API for synthetic data generation (unified SDK)
+
+# Level 1 RUN - Fine-tuning
+transformers>=4.36.0           # Hugging Face transformers (optional)
+peft>=0.7.0                    # LoRA fine-tuning (optional)
+datasets>=2.16.0               # Dataset loading (optional)
+torch>=2.1.0                   # PyTorch (optional, for local fine-tuning)
+
+# Level 2 - Tool Generation
+# (Core dependencies above are sufficient)
+
+# Demo & Development
+streamlit>=1.29.0              # Interactive demos
+pytest>=7.4.0                  # Testing framework
+pytest-asyncio>=0.21.0         # Async testing
+
+# Data Processing
+pandas>=2.1.0                  # Data manipulation (optional)
+numpy>=1.26.0                  # Numerical operations (optional)
+
+# Development Tools
+black>=23.12.0                 # Code formatting
+flake8>=6.1.0                  # Linting
+mypy>=1.7.0                    # Type checking
+
+# Optional: For better CLI experience
+rich>=13.7.0                   # Rich terminal output
+click>=8.1.0                   # CLI building
