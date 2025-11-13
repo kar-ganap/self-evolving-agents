@@ -22,7 +22,7 @@ fi
 
 # Generate from OpenAI (100 examples)
 echo "📝 Step 1/2: Generating 100 examples with OpenAI GPT-4o..."
-python -m src.level1.run.synthetic_data_generator \
+uv run python -m src.level1.run.synthetic_data_generator \
     --provider openai \
     --count 100 \
     --seed 42
@@ -33,7 +33,7 @@ echo ""
 
 # Generate from Gemini (100 examples)
 echo "📝 Step 2/2: Generating 100 examples with Google Gemini 2.5 Pro..."
-python -m src.level1.run.synthetic_data_generator \
+uv run python -m src.level1.run.synthetic_data_generator \
     --provider gemini \
     --count 100 \
     --seed 42
