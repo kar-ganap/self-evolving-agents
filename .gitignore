@@ -60,6 +60,9 @@ data/training/*.json
 *.safetensors
 *.bin
 
+# Exception: Allow train_v3.jsonl to be committed (small enough)
+!data/finetuning/train_v3.jsonl
+
 # Fine-tuned Models (large files)
 models/
 checkpoints/
