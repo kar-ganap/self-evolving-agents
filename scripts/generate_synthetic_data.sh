@@ -1,6 +1,6 @@
 #!/bin/bash
 # Generate 200 synthetic conversations (100 from OpenAI, 100 from Gemini)
-# 
+#
 # Usage: ./scripts/generate_synthetic_data.sh
 
 set -e
@@ -9,14 +9,20 @@ echo "🚀 Generating Synthetic Training Data"
 echo "======================================"
 echo ""
 
-# Check for API keys
+# Load environment variables from .env file if it exists
+if [ -f .env ]; then
+    echo "Loading environment variables from .env..."
+    export $(cat .env | grep -v '^#' | xargs)
+fi
+
+# Check for API keys (after loading .env)
 if [ -z "$OPENAI_API_KEY" ]; then
-    echo "❌ Error: OPENAI_API_KEY not set"
+    echo "❌ Error: OPENAI_API_KEY not set in .env file"
     exit 1
 fi
 
 if [ -z "$GOOGLE_API_KEY" ]; then
-    echo "❌ Error: GOOGLE_API_KEY not set"
+    echo "❌ Error: GOOGLE_API_KEY not set in .env file"
     exit 1
 fi
 

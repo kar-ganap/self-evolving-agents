@@ -17,6 +17,11 @@ from pathlib import Path
 from typing import List, Dict, Optional
 from dataclasses import dataclass
 import argparse
+from dotenv import load_dotenv
+
+# Load environment variables
+# override=True ensures .env takes precedence over shell environment
+load_dotenv(override=True)
 
 # API clients
 import openai

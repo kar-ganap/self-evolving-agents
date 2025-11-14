@@ -11,7 +11,8 @@ from typing import Optional
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
-load_dotenv()
+# override=True ensures .env takes precedence over shell environment
+load_dotenv(override=True)
 
 
 class Config:
@@ -27,6 +28,7 @@ class Config:
     # API Keys
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
     HF_TOKEN: str = os.getenv("HF_TOKEN", "")
 
     # Model Configuration
