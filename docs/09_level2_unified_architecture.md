@@ -2365,6 +2365,91 @@ The system starts with pure prompting (Level 1), gradually accumulates tools (Le
 
 ---
 
+## Data Management & File Locations
+
+### Current Training Data
+
+**Primary Training Data:**
+- **Location:** `data/finetuning/train_v3.jsonl`
+- **Content:** 201 examples (51 real conversations + 150 synthetic)
+- **Status:** Generated, exists locally, NOT committed to git
+- **Quality Metrics:**
+  - 65% unique prompts (131/201)
+  - 95% unique responses (191/201)
+  - Covers 10 identified patterns
+
+**Synthetic Data Generation:**
+- **OpenAI outputs:** `data/synthetic/openai/*.jsonl`
+- **Gemini outputs:** `data/synthetic/gemini/*.jsonl`
+- **Intermediate files:** `data/finetuning/train_additional_*.jsonl`
+
+### Source Code Locations
+
+**Level 1 Fine-tuning Infrastructure:**
+- **Prompt Library:** `src/level1/run/prompt_library.py`
+  - 150 unique prompts across 10 patterns
+  - Disjoint distribution: OpenAI gets even indices, Gemini gets odd indices
+- **Synthetic Generation:**
+  - OpenAI: `src/level1/run/generate_additional_examples.py`
+  - Gemini: `src/level1/run/generate_additional_examples_gemini.py`
+- **Data Processing:**
+  - Validation: `src/level1/run/validate_finetuning_data.py`
+  - Splitting: `src/level1/run/create_train_val_split.py`
+  - Extraction: `src/level1/run/extract_handcrafted_examples.py`
+- **Fine-tuning:**
+  - Start: `src/level1/run/start_finetuning.py`
+  - Monitor: `src/level1/run/monitor_finetuning.py`
+
+**Level 2 Components (Planned):**
+- **Tool Generation:** `src/level2/tools/` (to be created)
+- **Capability Detection:** `src/level2/capabilities/` (to be created)
+- **Build vs Buy Analysis:** `src/level2/analysis/` (to be created)
+
+### Documentation
+
+**Planning Documents:**
+- `docs/03_preference_profile.md` - 10 identified patterns
+- `docs/04_training_implementation_plan.md` - Original Level 1 plan
+- `docs/05_level2_architectural_changes.md` - Level 2 self-modification vision
+- `docs/06_detailed_implementation_roadmap.md` - Milestone-based roadmap
+- `docs/07_level2_detailed_roadmap.md` - Detailed L2.1-L2.10 milestones
+- `docs/08_synthetic_data_generation.md` - Synthetic data guide
+- `docs/09_level2_unified_architecture.md` - This document (unified Level 2 architecture)
+
+**Real Conversations (Pattern Source):**
+- `data/conversations/` - Original user conversations used for pattern extraction
+
+### Git Repository Structure
+
+**Branch:** `exploratory`
+**Remote:** `https://github.com/kar-ganap/self-evolving-agents`
+
+**Committed:**
+- All source code (`src/level1/`, `src/common/`)
+- All documentation (`docs/*.md`)
+- Infrastructure scripts (`scripts/`)
+
+**NOT Committed (in .gitignore):**
+- Training data (`data/finetuning/*.jsonl`)
+- Synthetic data (`data/synthetic/**/*.jsonl`)
+- API keys (`.env`)
+- Model outputs and intermediate files
+
+### Data Versioning Strategy
+
+**Current Approach:**
+- Training data versioned by filename: `train_v1.jsonl`, `train_v2.jsonl`, `train_v3.jsonl`
+- Git tracks code and documentation only
+- Data files stay local (too large, contains sensitive patterns)
+
+**Future Considerations (Level 2):**
+- Tool registry will need persistent storage
+- Tool usage metrics should be tracked
+- Approval decisions should be logged
+- Consider using DVC or similar for data versioning if needed
+
+---
+
 **Document Status:** Ready for Implementation
 **Last Updated:** 2025-01-14
-**Version:** 1.0
+**Version:** 1.1
