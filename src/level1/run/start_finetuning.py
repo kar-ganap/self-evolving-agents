@@ -61,7 +61,7 @@ def start_finetuning_job(
     client: OpenAI,
     training_file_id: str,
     validation_file_id: str = None,
-    model: str = "gpt-4o-2024-08-06",
+    model: str = "gpt-4.1-2025-04-14",
     suffix: str = "kartik-patterns"
 ) -> str:
     """Start fine-tuning job with validation file and early stopping"""
@@ -215,7 +215,7 @@ def main():
         client,
         training_file_id,
         validation_file_id=validation_file_id,
-        model="gpt-4o-2024-08-06",
+        model="gpt-4.1-2025-04-14",
         suffix="kartik-patterns"
     )
 

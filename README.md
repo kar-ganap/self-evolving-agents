@@ -78,13 +78,14 @@ uv run streamlit run src/demo/level2_crawl_demo.py
 
 ### Level 1: Pattern-Based Learning
 
-| Phase | Time | Output |
-|-------|------|--------|
-| **CRAWL** | 5.5h | Pattern-augmented prompting |
-| **WALK** | +6h | Few-shot learning with examples |
-| **RUN** | +40h | Fine-tuned custom model |
+| Phase | Time | Status | Output |
+|-------|------|--------|--------|
+| **Phase 0** (Learn Patterns) | ~20h | ✅ Complete | Base GPT-4.1 + system prompting (80% adherence) |
+| **Phase 1** (Runtime Optimization) | TBD | 📋 Next | DPO training for self-improvement |
 
-See: `docs/06_detailed_implementation_roadmap.md`
+**Key Result**: Base GPT-4.1 with pattern-aware system prompting achieves 80% pattern adherence, outperforming fine-tuning.
+
+See: `docs/11_phase0_results.md` for Phase 0 findings
 
 ### Level 2: Architectural Self-Modification
 
