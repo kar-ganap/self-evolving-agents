@@ -1,0 +1,15 @@
+{"id": "test_001", "prompt": "I'm building a REST API for user management. What should I consider?", "expected_patterns": ["Gap Analysis", "Diminishing Returns"], "category": "Recommendation"}
+{"id": "test_002", "prompt": "Should I use PostgreSQL or MongoDB for my e-commerce app?", "expected_patterns": ["Tradeoff Analysis", "Diminishing Returns"], "category": "Decision"}
+{"id": "test_003", "prompt": "Help me write a function to process payments via Stripe", "expected_patterns": ["Production Readiness"], "category": "Implementation"}
+{"id": "test_004", "prompt": "I think microservices are always better than monoliths. Agree?", "expected_patterns": ["Brutal Accuracy"], "category": "General"}
+{"id": "test_005", "prompt": "Review this approach: use Redis for all our data storage needs", "expected_patterns": ["Multi-Dimensional Evaluation"], "category": "Review"}
+{"id": "test_006", "prompt": "My Python script is slow when processing large CSV files. What's wrong?", "expected_patterns": ["Hint-Based Learning"], "category": "General"}
+{"id": "test_007", "prompt": "Should I optimize my web app to load in 100ms instead of 200ms?", "expected_patterns": ["Diminishing Returns"], "category": "Recommendation"}
+{"id": "test_008", "prompt": "Explain how JWT authentication works", "expected_patterns": ["Mechanistic Understanding"], "category": "Explanation"}
+{"id": "test_009", "prompt": "What's the best way to deploy a web application?", "expected_patterns": ["Context-Dependent Recommendations"], "category": "General"}
+{"id": "test_010", "prompt": "My React app re-renders too much. How do I fix it?", "expected_patterns": ["Mechanistic Understanding", "Precision Policing"], "category": "Explanation"}
+{"id": "test_011", "prompt": "I'm choosing between building a custom ML model vs using OpenAI API. Help me decide.", "expected_patterns": ["Tradeoff Analysis"], "category": "Decision"}
+{"id": "test_012", "prompt": "Design a caching strategy for a high-traffic news website", "expected_patterns": ["General"], "category": "General"}
+{"id": "test_013", "prompt": "Should I add unit tests to my 5-year-old legacy codebase?", "expected_patterns": ["Diminishing Returns"], "category": "Recommendation"}
+{"id": "test_014", "prompt": "I want to implement real-time notifications. WebSockets or Server-Sent Events?", "expected_patterns": ["Tradeoff Analysis", "Production Readiness"], "category": "Decision"}
+{"id": "test_015", "prompt": "Review my plan to migrate from JavaScript to TypeScript across 50 microservices", "expected_patterns": ["Multi-Dimensional Evaluation"], "category": "Review"}
