@@ -1,0 +1,34 @@
+# Level 2 RUN Configuration
+# Fine-tuned model for tool acquisition decisions
+
+fine_tuning:
+  enabled: true
+  model_id: "ft:gpt-4.1-2025-04-14:personal:tool-acquisition-v2:CiaQ8u8b"
+  fallback_model: "gpt-4.1-2025-04-14"
+
+  # Confidence thresholds for auto-approval
+  auto_approve_threshold: 0.85      # Auto-approve if confidence >= this
+  require_human_approval_threshold: 0.60  # Require human review below this
+  reject_threshold: 0.40            # Reject recommendations below this
+
+# Decision categories
+categories:
+  - free_library   # Use free/open-source library
+  - paid_api       # Use paid API service
+  - build          # Build custom solution
+  - no_gap         # No capability gap exists
+  - ambiguous      # Needs clarification
+
+# Cost settings
+cost:
+  hourly_dev_rate: 100.0  # USD per developer hour
+
+evaluation:
+  run_comparison: true
+  log_decisions: true
+  save_trajectories: true
+
+monitoring:
+  track_accuracy: true
+  alert_on_low_confidence: true
+  alert_threshold: 0.50

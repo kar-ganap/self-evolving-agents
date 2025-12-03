@@ -1,0 +1,70 @@
+{
+  "baseline": {
+    "model": "gpt-4.1-2025-04-14",
+    "total": 20,
+    "category_accuracy": 0.65,
+    "auto_approve_accuracy": 0.35,
+    "by_category": {
+      "free_library": {
+        "total": 4,
+        "correct": 4
+      },
+      "unknown": {
+        "total": 2,
+        "correct": 0
+      },
+      "paid_api": {
+        "total": 4,
+        "correct": 4
+      },
+      "no_gap": {
+        "total": 4,
+        "correct": 3
+      },
+      "build": {
+        "total": 5,
+        "correct": 1
+      },
+      "ambiguous": {
+        "total": 1,
+        "correct": 1
+      }
+    }
+  },
+  "finetuned": {
+    "model": "ft:gpt-4.1-2025-04-14:personal:tool-acquisition-v2:CiaQ8u8b",
+    "total": 20,
+    "category_accuracy": 0.75,
+    "auto_approve_accuracy": 0.45,
+    "by_category": {
+      "free_library": {
+        "total": 4,
+        "correct": 3
+      },
+      "unknown": {
+        "total": 2,
+        "correct": 0
+      },
+      "paid_api": {
+        "total": 4,
+        "correct": 4
+      },
+      "no_gap": {
+        "total": 4,
+        "correct": 4
+      },
+      "build": {
+        "total": 5,
+        "correct": 3
+      },
+      "ambiguous": {
+        "total": 1,
+        "correct": 1
+      }
+    }
+  },
+  "improvement": {
+    "category_accuracy": 0.09999999999999998,
+    "auto_approve_accuracy": 0.10000000000000003
+  }
+}

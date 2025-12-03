@@ -3,12 +3,19 @@ Build vs Buy Analyzer - Compares internal development vs external acquisition
 
 Analyzes capability gaps and determines whether to build custom tools or
 use existing libraries/APIs. Provides cost estimates and recommendations.
+
+Supports optional fine-tuned model for improved decision making (Level 2 RUN).
 """
 
 from dataclasses import dataclass
 from enum import Enum
 from typing import List, Dict, Optional
+import json
+import os
 import re
+from pathlib import Path
+
+import yaml
 
 
 class AcquisitionType(Enum):
@@ -96,16 +103,64 @@ class BuildVsBuyAnalyzer:
     3. Time: Quick integration (library) vs slower (build custom)
     4. Specificity: Generic needs = library, specific needs = build
     5. Maintenance: Prefer low-maintenance options
+
+    Supports optional fine-tuned model for improved decision making (Level 2 RUN).
     """
 
-    def __init__(self, hourly_dev_cost: float = 100.0):
+    # Fine-tuned model configuration
+    FINETUNED_MODEL = "ft:gpt-4.1-2025-04-14:personal:tool-acquisition-v2:CiaQ8u8b"
+    BASELINE_MODEL = "gpt-4.1-2025-04-14"
+
+    # JSON schema for structured output
+    DECISION_SCHEMA = {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "tool_acquisition_decision",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "analysis": {"type": "string"},
+                    "category": {
+                        "type": "string",
+                        "enum": ["free_library", "paid_api", "build", "no_gap", "ambiguous"]
+                    },
+                    "auto_approve": {
+                        "type": "string",
+                        "enum": ["yes", "no", "conditional"]
+                    },
+                    "reasoning": {"type": "string"}
+                },
+                "required": ["analysis", "category", "auto_approve", "reasoning"],
+                "additionalProperties": False
+            }
+        }
+    }
+
+    def __init__(
+        self,
+        hourly_dev_cost: float = 100.0,
+        use_finetuned: bool = False,
+        openai_api_key: Optional[str] = None,
+        config_path: Optional[Path] = None
+    ):
         """
         Initialize the analyzer.
 
         Args:
             hourly_dev_cost: Cost per developer hour in USD (default: $100)
+            use_finetuned: Whether to use fine-tuned model for decisions
+            openai_api_key: OpenAI API key (uses env var if not provided)
+            config_path: Path to config file (default: config/level2_run_settings.yaml)
         """
         self.hourly_dev_cost = hourly_dev_cost
+        self.use_finetuned = use_finetuned
+        self.openai_client = None
+
+        # Load config if using fine-tuned model
+        if self.use_finetuned:
+            self._load_config(config_path)
+            self._init_openai_client(openai_api_key)
 
         # Known libraries for different capabilities
         self.known_libraries = {
@@ -127,6 +182,89 @@ class BuildVsBuyAnalyzer:
             ]
         }
 
+    def _load_config(self, config_path: Optional[Path] = None) -> None:
+        """Load configuration from YAML file."""
+        if config_path is None:
+            # Find project root and load default config
+            config_path = Path(__file__).parent.parent.parent.parent / "config" / "level2_run_settings.yaml"
+
+        self.config = {}
+        if config_path.exists():
+            with open(config_path) as f:
+                self.config = yaml.safe_load(f)
+
+    def _init_openai_client(self, api_key: Optional[str] = None) -> None:
+        """Initialize OpenAI client for fine-tuned model."""
+        try:
+            from openai import OpenAI
+            from dotenv import load_dotenv
+
+            # Load .env if exists
+            env_path = Path(__file__).parent.parent.parent.parent / ".env"
+            if env_path.exists():
+                load_dotenv(env_path, override=True)
+
+            key = api_key or os.getenv("OPENAI_API_KEY")
+            if key:
+                self.openai_client = OpenAI(api_key=key)
+        except ImportError:
+            print("Warning: openai package not installed, fine-tuned model disabled")
+            self.use_finetuned = False
+
+    def _get_finetuned_recommendation(
+        self,
+        pattern_name: str,
+        missing_capabilities: List[str]
+    ) -> Optional[Dict]:
+        """
+        Get recommendation from fine-tuned model.
+
+        Returns:
+            Dict with category, auto_approve, analysis, reasoning or None on error
+        """
+        if not self.openai_client:
+            return None
+
+        # Build the prompt
+        system_prompt = """You are a tool acquisition advisor. Analyze the pattern and respond with a JSON decision.
+
+Categories:
+- free_library: Use a free/open-source library
+- paid_api: Use a paid API service
+- build: Build custom solution internally
+- no_gap: No capability gap - existing stdlib/tools sufficient
+- ambiguous: Need clarification or conditional recommendation
+
+Auto-approve:
+- yes: Safe to auto-approve (low risk, reversible)
+- no: Requires human review (high cost, security sensitive)
+- conditional: Depends on specific conditions"""
+
+        user_prompt = f"""Pattern: {pattern_name}
+Description: Analyze capability gap and recommend tool acquisition strategy
+Current capabilities: Standard Python stdlib
+Missing capabilities: {', '.join(missing_capabilities)}
+Query: Should we build/acquire a tool for this pattern?"""
+
+        try:
+            response = self.openai_client.chat.completions.create(
+                model=self.FINETUNED_MODEL,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                temperature=0.0,
+                max_tokens=1000,
+                response_format=self.DECISION_SCHEMA
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            return result
+
+        except Exception as e:
+            print(f"Fine-tuned model error: {e}")
+            return None
+
     def analyze(
         self,
         pattern_name: str,
@@ -144,13 +282,21 @@ class BuildVsBuyAnalyzer:
         Returns:
             BuildVsBuyRecommendation with analysis and decision
         """
-        # Analyze build option
+        # Analyze build option (always needed for cost estimates)
         build_option = self._estimate_build_cost(missing_capabilities, automation_potential)
 
         # Analyze buy options (libraries/APIs)
         buy_options = self._find_buy_options(missing_capabilities)
 
-        # Make recommendation
+        # Try fine-tuned model first if enabled
+        if self.use_finetuned:
+            ft_result = self._get_finetuned_recommendation(pattern_name, missing_capabilities)
+            if ft_result:
+                return self._convert_finetuned_to_recommendation(
+                    ft_result, pattern_name, build_option, buy_options
+                )
+
+        # Fallback to heuristic recommendation
         recommendation = self._make_recommendation(
             pattern_name=pattern_name,
             build_option=build_option,
@@ -159,6 +305,64 @@ class BuildVsBuyAnalyzer:
         )
 
         return recommendation
+
+    def _convert_finetuned_to_recommendation(
+        self,
+        ft_result: Dict,
+        pattern_name: str,
+        build_option: BuildOption,
+        buy_options: List[BuyOption]
+    ) -> BuildVsBuyRecommendation:
+        """Convert fine-tuned model output to BuildVsBuyRecommendation."""
+        category = ft_result.get("category", "build")
+        reasoning = ft_result.get("reasoning", "")
+        analysis = ft_result.get("analysis", "")
+
+        # Map category to AcquisitionType
+        category_map = {
+            "free_library": AcquisitionType.LIBRARY,
+            "paid_api": AcquisitionType.API,
+            "build": AcquisitionType.BUILD,
+            "no_gap": AcquisitionType.BUILD,  # No action needed, but return BUILD type
+            "ambiguous": AcquisitionType.BUILD  # Needs human review
+        }
+        recommended_action = category_map.get(category, AcquisitionType.BUILD)
+
+        # Calculate confidence based on auto_approve
+        auto_approve = ft_result.get("auto_approve", "no")
+        confidence_map = {"yes": 0.9, "conditional": 0.7, "no": 0.5}
+        confidence = confidence_map.get(auto_approve, 0.6)
+
+        # Estimate cost
+        if recommended_action == AcquisitionType.LIBRARY and buy_options:
+            best_buy = min(buy_options, key=lambda x: x.cost_per_month)
+            total_cost = best_buy.setup_hours * self.hourly_dev_cost
+            selected_buy_options = [best_buy]
+        elif recommended_action == AcquisitionType.API and buy_options:
+            api_options = [o for o in buy_options if o.acquisition_type == AcquisitionType.API]
+            if api_options:
+                best_api = min(api_options, key=lambda x: x.cost_per_month * 12)
+                total_cost = best_api.cost_per_month * 12 + best_api.setup_hours * self.hourly_dev_cost
+                selected_buy_options = [best_api]
+            else:
+                total_cost = build_option.estimated_hours * self.hourly_dev_cost
+                selected_buy_options = buy_options
+        else:
+            total_cost = build_option.estimated_hours * self.hourly_dev_cost
+            selected_buy_options = buy_options
+
+        # Combine analysis and reasoning for rationale
+        rationale = f"[Fine-tuned model] {analysis}\n\nReasoning: {reasoning}"
+
+        return BuildVsBuyRecommendation(
+            pattern_name=pattern_name,
+            recommended_action=recommended_action,
+            build_option=build_option,
+            buy_options=selected_buy_options,
+            rationale=rationale,
+            total_cost_estimate=total_cost,
+            confidence=confidence
+        )
 
     def _estimate_build_cost(
         self,
