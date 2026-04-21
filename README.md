@@ -81,21 +81,20 @@ uv run streamlit run src/demo/level2_crawl_demo.py
 | Phase | Time | Status | Output |
 |-------|------|--------|--------|
 | **Phase 0** (Learn Patterns) | ~20h | ✅ Complete | Base GPT-4.1 + system prompting (80% adherence) |
-| **Phase 1** (Runtime Optimization) | TBD | 📋 Next | DPO training for self-improvement |
 
-**Key Result**: Base GPT-4.1 with pattern-aware system prompting achieves 80% pattern adherence, outperforming fine-tuning.
+**Key Finding**: Base GPT-4.1 with carefully crafted system prompting achieves **80% pattern adherence** — outperforming fine-tuned GPT-4.1 at **64%** (a 15.6% advantage). Root cause traced to insufficient per-pattern training data (~20 examples vs 50–100 industry norm) and a synthetic-data quality ceiling.
 
-See: `docs/11_phase0_results.md` for Phase 0 findings
+See `docs/11_phase0_results.md` for full Phase 0 analysis and `docs/10_sft_vs_dpo_analysis.md` for the SFT/DPO tradeoff analysis that led to deprioritizing a dedicated DPO phase.
 
 ### Level 2: Architectural Self-Modification
 
-| Phase | Time | Output |
-|-------|------|--------|
-| **CRAWL** | +4h | Auto-generated tools |
-| **WALK** | +3h | Adaptive tool creation |
-| **RUN** | +0h | Integrated with Level 1 RUN |
+| Phase | Status | Output |
+|-------|--------|--------|
+| **CRAWL** | ✅ Complete | Auto-generated tools with capability-gap detection |
+| **WALK** | ✅ Complete | External resource acquisition (PyPI search, build-vs-buy analysis, cost tracking) |
+| **RUN** | ✅ Complete | Fine-tuned model for tool acquisition decisions |
 
-See: `docs/07_level2_detailed_roadmap.md`
+See `docs/07_level2_detailed_roadmap.md` for the design spec, `docs/12_level2_crawl_implementation_roadmap.md` and `docs/13_level2_run_implementation_roadmap.md` for implementation details.
 
 ## Documentation
 
@@ -185,8 +184,4 @@ See implementation roadmaps in `docs/` for detailed plans with go/no-go checkpoi
 
 ## License
 
-[Your License Here]
-
-## Contact
-
-[Your Contact Information]
+MIT License — see `LICENSE` for details.
